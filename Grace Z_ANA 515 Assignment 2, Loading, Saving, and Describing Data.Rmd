@@ -1,0 +1,117 @@
+---
+title: "ANA 515 Assignment 2"
+author: "Grace Zeng"
+date: "6/16/2024"
+output:
+  html_document: null
+  theme: journal
+  pdf_document: default
+---
+
+### Description of the data：
+The dataset* selected for this analysis comes from the FBI and the Southern Poverty Law Center (SPLC) and the research question is: What are the trends in hate crime rates by state, and what state-level factors are associated with these variations?
+
+Data collection: The federal government does not systematically track hate crimes, as reporting to the FBI is voluntary. The Southern Poverty Law Center relies on media accounts and self-reports to evaluate the situation. Both sources provide publicly available data.
+
+*The dataset is found on [GitHub](https://github.com/fivethirtyeight/data/tree/master/hate-crimes)
+ and it is in csv. format.  More background information can be found in this [article](https://fivethirtyeight.com/features/higher-rates-of-hate-crimes-are-tied-to-income-inequality/).
+
+
+---
+
+
+```{r setup, include= FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#install.packages("tidyverse")
+#install.packages("knitr")
+#install.packages("bslib")
+
+library(tidyverse)
+library(knitr)
+library(bslib)
+```
+
+```{r GitHubdata, include= FALSE}
+#task 2: Loading the data：
+url <- "https://raw.githubusercontent.com/fivethirtyeight/data/master/hate-crimes/hate_crimes.csv"
+hate_crimes <- read_csv(url)
+glimpse(hate_crimes)
+# I used read_csv function and this function comes from the tidyverse package
+```
+
+### Get a glimpse of the data
+```{r glimpsedata, echo = FALSE}
+#task 2: Loading the data：
+glimpse(hate_crimes) 
+```
+
+---
+
+```{r datacleaning, include= FALSE}
+#task3: Clean the data
+#arrange
+hate_crimes_arrange_by_income <- arrange(hate_crimes, median_household_income)
+
+#filter
+morethan50_share_voters_voted_trump <-filter(hate_crimes, share_voters_voted_trump>0.5)
+
+```
+
+
+### Characteristics of the data
+
+This dataframe has has `r nrow(hate_crimes_arrange_by_income)`  rows and `r ncol(hate_crimes_arrange_by_income)` columns. The names of the columns and a brief description of each are in the table below:
+
+```{r tabledescription, echo = FALSE}
+#task 4 Characteristics of the data
+library(knitr)
+
+# Your dataset
+data_subset <- hate_crimes_arrange_by_income
+
+# Description of columns
+columns_summary <- data.frame(
+  Columns = colnames(data_subset),
+  Description = c(
+    "State name", 
+    "Median household income, 2016",
+    "Share of the population that is unemployed (seasonally adjusted), Sept. 2016",
+    "Share of the population that lives in metropolitan areas, 2015",
+    "Share of adults 25 and older with a high-school degree, 2009",
+    "Share of the population that are not U.S. citizens, 2015",
+    "Share of white residents who are living in poverty, 2015",
+    "Gini Index, 2015",
+    "Share of the population that is not white, 2015",
+    "Share of 2016 U.S. presidential voters who voted for Donald Trump",
+    "Hate crimes per 100,000 population, Southern Poverty Law Center, Nov. 9-18, 2016",
+    "Average annual hate crimes per 100,000 population, FBI, 2010-2015"
+  )
+)
+
+# Create a table with descriptions
+kable(columns_summary, caption = "Description of Columns in hate_crimes_arrange_by_income Dataset")
+
+```
+
+### Summary of data subset
+
+```{r subset, include= FALSE}
+#task 5 Summary statistics
+#subset of the dataset
+
+subset_hate_crimes_arrange_by_income <- select(hate_crimes_arrange_by_income, state, median_household_income, share_unemployed_seasonal, avg_hatecrimes_per_100k_fbi)
+
+```
+
+Subset of the data: 
+```{r subset_of_data,echo = FALSE }
+head(subset_hate_crimes_arrange_by_income)
+```
+
+Summary of the subset:
+```{r summary, echo = FALSE}
+Summarytable <-summary(subset_hate_crimes_arrange_by_income) #creates the summary
+Summarytable #prints the summary in your output
+```
+
